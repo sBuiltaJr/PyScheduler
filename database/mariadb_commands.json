@@ -1,0 +1,11 @@
+{
+	"create_calendar"	: "",
+	"create_database"	: "",
+	"create_event"		: "",
+	"create_guild"		: "",
+	"delete_calendar"	: "",
+	"delete_database"	: "",
+	"delete_event"		: "",
+	"delete_guild"		: "",
+	"edit_event"		: ""
+}
