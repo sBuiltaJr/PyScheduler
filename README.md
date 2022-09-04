@@ -23,6 +23,8 @@ PyScheduler can be self-hosted with the following dependencies:
 - mariadb 15.1 (older versions/other DBs may work)
 - Pip 22.0.2
 - Discord.py 2.0.1
+- MariaDB Connector/C
+- mariadb (python) 1.1.4
 
 Newer versions of the above may also work. 
 

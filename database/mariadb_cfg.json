@@ -1,0 +1,9 @@
+{
+	"log_file_mode" : "755",
+	"log_dir"	    : "logs",
+	"log_encoding"  : "utf-8",
+	"log_level"	    : "INFO",
+	"log_mode"      : "w",
+	"password"      : "",
+	"user_name"     : "root"
+}

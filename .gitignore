@@ -2,6 +2,7 @@
 client_secret.json
 token.txt
 token.json
+*.log
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
