@@ -98,9 +98,12 @@ class mariadbIfc:
 				#permissions, instead of just relying on the GRANT table, in case
 				#any weird connection issues occur.
 				cursor.execute(f"{self.cmds['create_bogus']}")
+				cursor.execute(f"{self.cmds['insert_bogus']}")
+				cursor.execute(f"{self.cmds['update_bogus']}")
+				cursor.execute(f"{self.cmds['delete_bogus']}")
 				#Delete also intentionally omits the 'IF EXIST' component for the
 				#same reason.
-				cursor.execute(f"{self.cmds['delete_bogus']}")
+				cursor.execute(f"{self.cmds['drop_bogus']}")
 		
 		except mariadb.OperationalError as err:
 			self.db_log.error(f"Unable to access database: {err}")
