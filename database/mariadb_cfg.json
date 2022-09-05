@@ -1,12 +1,18 @@
 {
 	"auto_reconnect" : "True",
-	"host"           : "127.0.0.1",
+	"dbs"            :
+	{
+		"calendar"  : "PSBCalendars",
+		"events"    : "PSBEvents",
+		"guilds"    : "PSBGuilds"
+	},
+	"host"           : "localhost",
 	"log_file_mode"  : "755",
 	"log_dir"	     : "logs",
 	"log_encoding"   : "utf-8",
 	"log_level"	     : "INFO",
 	"log_mode"       : "w",
-	"password"       : "",
+	"password"       : "password",
 	"port"           : "3306",
-	"user_name"      : "root"
+	"user_name"      : "PSB"
 }

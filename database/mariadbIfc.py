@@ -11,6 +11,8 @@ import sys
 #Temporary until this is purely instantiated by a parent.
 db = ''
 
+
+
 #####  Manager Class  #####
 class mariadbIfc:
 	"""Acts as the dabase interface for MariaDB SQL servers.  Also creates
@@ -61,45 +63,62 @@ class mariadbIfc:
 			self.db_log.error(f"Unable to get MariaDB commands: {e=}")
 			sys.exit(1)
 
-	def validateInstall(self, create : bool):
+
+
+	def validateInstall(self):
 		"""Validates all the database components are accessable and usable by the
-			script.  It optionally attempts to create any missing tables/databases
-			if directed with the 'create' option.
+			script.
 			
 			Input: self - Pointer to the current object instance.
-					 create - Whether to attempt making a DB if it doesn't exist.
 			
 			Output: bool - True if install is valid and usable.
 		"""
-		#This start true so the acces attempt can set it false to signal the
-		#create option
-		all_ok = True
+		all_ok = False
 		
+		#These are separarte try statements for better error debugging.  The idea
+		#of creating missing DBs was scrapped due to implementation complexity.
+		#(The script would need to invoke mariadb as sudo with root).
 		try:
 			self.con = mariadb.connect(host=self.args['host'], \
 												port=int(self.args['port']), \
 												user=self.args['user_name'], \
 												password=self.args['password'])
-		except mariadb.Error as err:
-			self.db_log.error(f"Error connecting to mariadb: {err=}")
-			all_ok = False
 			
-			if not create :
-				return all_ok
+		except mariadb.Error as err:
+			self.db_log.error(f"Error connecting to mariadb: {err}")
+			return all_ok
+			
+		try:
+			#The interface requries the cursor.
+			cursor = self.con.cursor()
+				
+			for db in self.args['dbs'].values():
+				self.con.database=db
+				#The script actually interacts with the Tables to truly confirm the
+				#permissions, instead of just relying on the GRANT table, in case
+				#any weird connection issues occur.
+				cursor.execute(f"{self.cmds['create_bogus']}")
+				#Delete also intentionally omits the 'IF EXIST' component for the
+				#same reason.
+				cursor.execute(f"{self.cmds['delete_bogus']}")
 		
-		if not all_ok:
-			#At best we can attempt to try the default user/password connection,
-			#and exit if it fails.  From tehr eonly the user can fix the problem.
-			try:
-				self.con = mariadb.connect(host="127.0.0.1", \
-													port=3306, \
-													user="root", \
-													password="")
-			except mariadb.Error as err:
-				self.db_log.error("Unable to log in with root using the default mariadb settings, you must make an account for me first or allow root access. Or is the service off?")
-				self.db_log.error(f"Error: {err=}") 
-										
+		except mariadb.OperationalError as err:
+			self.db_log.error(f"Unable to access database: {err}")
+			return all_ok
+			
+		except mariadb.ProgrammingError as err:
+			self.db_log.error(f"Unable to access tables in database: {err}")
+			return all_ok
+			
+		except mariadb.Error as err:
+			self.db_log.error(f"Error running mariadb commands: {err=}")
+			return all_ok
+
+		all_ok = True;
+		
 		return all_ok
+
+
 
 if __name__ == '__main__':
 	#Temporary until the log is actually made in the main python class.
@@ -107,9 +126,11 @@ if __name__ == '__main__':
 						encoding='utf-8', \
 						filemode='a', \
 						level=log.INFO)
+						
 	db = mariadbIfc()
-	if not db.validateInstall(True):
-		#This is intentionally to the terminal so a new user gets an overt and
-		#obviosu prompt to check the logs.
+	
+	if not db.validateInstall():
+		#This is intentionally written to the terminal (instead of a logger) so
+		#a new user gets an overt and obvious prompt to check the logs.
 		print(f"Error validating install, see log for details.")
 	

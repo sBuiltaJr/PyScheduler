@@ -1,11 +1,15 @@
 {
-	"create_calendar"	: "",
-	"create_database"	: "",
-	"create_event"		: "",
-	"create_guild"		: "",
-	"delete_calendar"	: "",
-	"delete_database"	: "",
-	"delete_event"		: "",
-	"delete_guild"		: "",
-	"edit_event"		: ""
+	"create_bogus"    : "CREATE TABLE IF NOT EXISTS bogus(test int auto_increment, primary key (test));",
+	"create_calendar"	: "CREATE DATABASE IF NOT EXISTS PSBCalendars;",
+	"create_event"		: "CREATE DATABASE IF NOT EXISTS PSBEvents;",
+	"create_guild"		: "CREATE DATABASE IF NOT EXISTS PSBGuilds;",
+	"create_user"     : "CREATE USER IF NOT EXISTS %s@%s IDENTIFIED BY '%s';",
+	"delete_bogus"    : "DROP TABLE bogus;",
+	"delete_calendar"	: "DROP DATABASE IF EXISTS PSBCalendars;",
+	"delete_event"		: "DROP DATABASE IF EXISTS PSBEvents;",
+	"delete_guild"		: "DROP DATABASE IF EXISTS PSBGuilds;",
+	"edit_event"		: "",
+	"grant_calendar"  : "GRANT ALL PRIVILEGES ON PSBCalendar.* TO %s@%s;",
+	"grant_guild"     : "GRANT ALL PRIVILEGES ON PSBGuild.* TO %s@%s;",
+	"gran_event"      : "GRANT ALL PRIVILEGES ON PSBEvents.* TO %s@%s;"
 }
