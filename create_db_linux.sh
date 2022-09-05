@@ -1,5 +1,6 @@
 #!/bin/sh
 
+PSB_db=PSBDB
 PSB_host=localhost
 PSB_name=PSB
 PSB_pass=password
@@ -10,11 +11,8 @@ sudo mariadb -u root -e "CREATE USER IF NOT EXISTS $PSB_name@$PSB_host IDENTIFIE
 #As of at least Mariadb 10, the user can be made before the DB (even though
 #the syntax implies the reverse).  Futher script updates will probably check
 #for sudo properly before executing these first 4 commands.
-sudo mariadb -u root -e "GRANT ALL PRIVILEGES ON PSBEvents.* TO $PSB_name@$PSB_host;"
-sudo mariadb -u root -e "GRANT ALL PRIVILEGES ON PSBGuilds.* TO $PSB_name@$PSB_host;"
-sudo mariadb -u root -e "GRANT ALL PRIVILEGES ON PSBCalendars.* TO $PSB_name@$PSB_host;"
+sudo mariadb -u root -e "GRANT ALL PRIVILEGES ON $PSB_db.* TO $PSB_name@$PSB_host;"
 
 #Everything else can be accomplished by the bot, and should for verification.
-mariadb -u$PSB_name -p$PSB_pass -h$PSB_host -e "CREATE DATABASE IF NOT EXISTS PSBEvents;"
-mariadb -u$PSB_name -p$PSB_pass -h$PSB_host -e "CREATE DATABASE IF NOT EXISTS PSBGuilds;"
-mariadb -u$PSB_name -p$PSB_pass -h$PSB_host -e "CREATE DATABASE IF NOT EXISTS PSBCalendars;"
+mariadb -u$PSB_name -p$PSB_pass -h$PSB_host -e "CREATE DATABASE IF NOT EXISTS $PSB_db;"
+#Add table inserts here.

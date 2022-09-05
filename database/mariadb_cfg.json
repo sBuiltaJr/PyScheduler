@@ -1,11 +1,6 @@
 {
 	"auto_reconnect" : "True",
-	"dbs"            :
-	{
-		"calendar"  : "PSBCalendars",
-		"events"    : "PSBEvents",
-		"guilds"    : "PSBGuilds"
-	},
+	"database"       : "PSBDB",
 	"host"           : "localhost",
 	"log_file_mode"  : "755",
 	"log_dir"	     : "logs",
@@ -14,5 +9,11 @@
 	"log_mode"       : "w",
 	"password"       : "password",
 	"port"           : "3306",
+	"tables"         :
+	{
+		"calendar"  : "PSBCalendars",
+		"events"    : "PSBEvents",
+		"guilds"    : "PSBGuilds"
+	},
 	"user_name"      : "PSB"
 }

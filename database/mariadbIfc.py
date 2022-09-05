@@ -91,12 +91,12 @@ class mariadbIfc:
 		try:
 			#The interface requries the cursor.
 			cursor = self.con.cursor()
-				
-			for db in self.args['dbs'].values():
-				self.con.database=db
+			self.con.database = self.args['database']
+
+			for db in self.args['tables'].values():
 				#The script actually interacts with the Tables to truly confirm the
-				#permissions, instead of just relying on the GRANT table, in case
-				#any weird connection issues occur.
+				#permissions, instead of just relying on the GRANT table, to avoid
+				#having to parse the output and guess some of the parameters.
 				cursor.execute(f"{self.cmds['create_bogus']}")
 				cursor.execute(f"{self.cmds['insert_bogus']}")
 				cursor.execute(f"{self.cmds['update_bogus']}")
