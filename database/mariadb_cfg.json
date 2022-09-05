@@ -1,9 +1,12 @@
 {
-	"log_file_mode" : "755",
-	"log_dir"	    : "logs",
-	"log_encoding"  : "utf-8",
-	"log_level"	    : "INFO",
-	"log_mode"      : "w",
-	"password"      : "",
-	"user_name"     : "root"
+	"auto_reconnect" : "True",
+	"host"           : "127.0.0.1",
+	"log_file_mode"  : "755",
+	"log_dir"	     : "logs",
+	"log_encoding"   : "utf-8",
+	"log_level"	     : "INFO",
+	"log_mode"       : "w",
+	"password"       : "",
+	"port"           : "3306",
+	"user_name"      : "root"
 }
