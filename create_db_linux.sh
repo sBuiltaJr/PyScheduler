@@ -16,3 +16,5 @@ sudo mariadb -u root -e "GRANT ALL PRIVILEGES ON $PSB_db.* TO $PSB_name@$PSB_hos
 #Everything else can be accomplished by the bot, and should for verification.
 mariadb -u$PSB_name -p$PSB_pass -h$PSB_host -e "CREATE DATABASE IF NOT EXISTS $PSB_db;"
 #Add table inserts here.
+#Note: Prefix may be OBE with the slash command change but I'm keeping it for now in case it's still necessary.
+mariadb -u$PSB_name -p$PSB_pass -h$PSB_host $PSD_db -e "CREATE TABLE IF NOT EXISTS (test int auto_increment, primary key (test));"
