@@ -7,12 +7,11 @@
 
 # Databases
 - Meant as self-host
-- Don't see need for mongoDB's noSQL capabilities.
-- Won't be merging databases or failing shards over, probably.
-- Can worry about that if I ever get there.
-- Stick MariaDB for now to focus on self-hosts.
-- Maria does need sudo login/setup and table create, comprimising with ssetup scripts for now.
-- Also [maria can store JSON data](https://mariadb.com/resources/blog/using-json-in-mariadb/), so the calendar/event tables are easy enough to generate.
+- Switch to MongoDB for easier python integration
+- No real need for the relational behavior.
+- Adds dependnecies to the python driver [PyMong](https://pymongo.readthedocs.io/en/stable/index.html)
+- Relational table structure jstu unnecessary and burdensome
+- Easier to make mongo users for self-hosting.
 
 # Invites
 - Could theoretically track user who invited bot, but requries guild management permissions (should be denied by a reasonable user).
