@@ -1,0 +1,6 @@
+{
+    "command_ch" : "",
+    "free_cmds"  : "['diagnose', 'events', 'help', 'list', 'schedules']",
+    "timeout"    : "15",
+    "prefix"     : "!"
+}

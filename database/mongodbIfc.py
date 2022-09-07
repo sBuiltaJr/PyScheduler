@@ -95,12 +95,12 @@ class mongodbIfc:
                 result = coll.insert_one({'test_val': '65536'})
 
                 if not result.acknowledged:
-                    raise pymongo.errors.InvalidOperation("Write failed!")
+                    raise pymongo.errors.InvalidOperation("Write test failed!")
                 else:
                     result = coll.delete_one({'_id' : result.inserted_id})
 
                     if not result.acknowledged:
-                        raise pymongo.errors.InvalidOperation("Read failed!")
+                        raise pymongo.errors.InvalidOperation("Read test failed!")
 
         except pymongo.error.InvalidOperation as err:
             self.db_log.error(f"Error accessing collections! {err}")
@@ -112,7 +112,6 @@ class mongodbIfc:
         all_ok = True;
 
         return all_ok
-
 
 
 if __name__ == '__main__':
@@ -129,3 +128,5 @@ if __name__ == '__main__':
         #a new user gets an overt and obvious prompt to check the logs.
         print(f"Error validating install, see log for details.")
 
+
+#Python is sure nice sometiems:  have argparser return user input parsed, just give string args.

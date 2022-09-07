@@ -1,0 +1,17 @@
+{
+    "alt_zones" : "[]",
+    "annc_ch"   : "0",
+    "annc_end"  : "",
+    "annc_fmt"  : "0",
+    "clk_fmt"   : "24",
+    "guild_id"  : "0",
+    "rem_ch"    : "0",
+    "rem_fmt"   : "{}",
+    "rsvp_log"  : "0",
+    "rsvp_clr"  : ":x:",
+    "rsvp_conf" : "True",
+    "rsvp_opts" : "{}",
+    "sync_time" : "ISODate('2022-09-07T18:00:00.000Z')",
+    "sync_usr"  : "",
+    "timezone"  : "America/Alaska"
+}

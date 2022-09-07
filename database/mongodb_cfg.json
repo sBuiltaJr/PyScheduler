@@ -15,6 +15,7 @@
         "events"     : "PSBEvents",
         "guilds"     : "PSBGuilds"
     },
+    "templates"      : "templates",
     "user_name"      : "PSB"
 }
 
