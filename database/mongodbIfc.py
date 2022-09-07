@@ -14,7 +14,7 @@ db = ''
 
 
 #####  Manager Class  #####
-class mongodbIfc:
+class MongodbIfc:
     """Acts as the dabase interface for MongoDB SQL servers.  Also creates
         tables, users, and fields as needed.
     """
@@ -32,7 +32,7 @@ class mongodbIfc:
         self.args = {}
         self.cmds = {}
 
-        #The config file lcoation is nonconfigurable, for now.
+        #The config file location is nonconfigurable, for now.
         try:
             json_file = open('mongodb_cfg.json')
             self.args = json.load(json_file)
@@ -121,12 +121,10 @@ if __name__ == '__main__':
                         filemode='a', \
                         level=log.INFO)
 
-    db = mongodbIfc()
+    db = MongodbIfc()
 
     if not db.validateInstall():
         #This is intentionally written to the terminal (instead of a logger) so
         #a new user gets an overt and obvious prompt to check the logs.
         print(f"Error validating install, see log for details.")
 
-
-#Python is sure nice sometiems:  have argparser return user input parsed, just give string args.

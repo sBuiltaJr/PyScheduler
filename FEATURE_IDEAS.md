@@ -38,3 +38,4 @@ Interchangeable Databases
 Backup scripts
 DB reconciliation
 Identify inviter as schedule config
+Ability to ban/deprioritize specified users (no-shows).
