@@ -41,6 +41,42 @@ class CommandParser:
         self.cmd_log.propagate = False
         self.cmd_log.info(f"Command logger initialized.")
 
+        #We can now at least use the logger for errors.
+        try:
+            json_file = open('parse_strings.json')
+            self.txt  = json.load(json_file)
+
+        except Exception as err:
+            self.cmd_log.error(f"Unable to get parser strings: {err}")
+
+        #It's presumably faster to make all the parser instances once instead
+        #of every invocation of a parse function.
+        annAp = ap.ArgumentParser(prog=self.txt['ann_prog'],
+                                  description=self.txt['ann_desc'],
+                                  help=self.txt['ann_help'])
+        #todo:  There's probably a clever way to loop this.
+        annAp.add_argument("ID", type=str, required=True)
+        annGrp = annAp.add_mutually_exclusive_group(required=False)
+        #The command is effectively 'add to channel'
+        annGrp.add_argument("add", type=int)
+        annGrp.add_argument("delete", type=int)
+        #Add's validate function needs to parse any additional arguments.
+        annAp.add_argument("args", type=str, requried=False)
+
+
+        cfgAp = ap.ArgumentParser(prog=self.txt['cfg_prog'],
+                                  description=self.txt['cfg_desc'],
+                                  help=self.txt['cfg_help'])
+        #todo:  There's probably a clever way to loop this.
+        cfgAp.add_argument("ID", type=str, required=True)
+        annGrp = annAp.add_mutually_exclusive_group(required=False)
+        #The command is effectively 'add to channel'
+        annGrp.add_argument("add", type=int)
+        annGrp.add_argument("delete", type=int)
+        #Add's validate function needs to parse any additional arguments.
+        annAp.add_argument("args", type=str, requried=False)
+
+
     def SortCommand(self, cmd : str) -> list:
         """Parses the first component of a command string to determine the type
            of command supplied.  Each command has a different structure and
@@ -71,7 +107,7 @@ class CommandParser:
     def ParseAnnouncements(self, args : str) -> list:
         """Parses the announcements command.  Announcements requires at least
            1 argument with 2 optional; one for the channel to list 
-           announcements, and 2 optioal to either add a announcement string
+           announcements, and 2 optional to either add a announcement string
            (instead of list) or which announcement to remove.
 
            Input: self - Pointer to the current object instance.
