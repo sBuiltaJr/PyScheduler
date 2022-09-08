@@ -56,14 +56,16 @@ class CommandParser:
                                   allow_abbrev=False)
         #todo:  There's probably a clever way to loop this.
         self.annAp.add_argument("-ID", type=str)
-#        self.annSub = self.annAp.add_subparsers()
+        self.annSub = self.annAp.add_subparsers()
         #The command is effectively 'add to channel'
-#        self.annSubAdd = self.annSub.add_parser('add', help=self.txt['ann_add_help'])
-#        self.annSubAdd.add_argument('-channel', type=int)
-#        self.annSubAdd.add_argument('-rem_time', type=str)
-#        self.annSubAdd.add_argument('-message', type=str)
-#        self.annSubRem = self.annSub.add_parser('remove', help=self.txt['ann_rem_help'])
-#        self.annSubRem.add_argument('-msg_id', type=int)
+        self.annSubAdd = self.annSub.add_parser('add', \
+                                                help=self.txt['ann_add_help'])
+        self.annSubAdd.add_argument('-channel', type=int, required=True)
+        self.annSubAdd.add_argument('-rem_time', type=str, required=True)
+        self.annSubAdd.add_argument('-message', type=str, required=True)
+        self.annSubRem = self.annSub.add_parser('remove',\
+                                                help=self.txt['ann_rem_help'])
+        self.annSubRem.add_argument('-msg_id', type=int, required=True)
 
 #        cfgAp = ap.ArgumentParser(prog=self.txt['cfg_prog'],
 #                                  description=self.txt['cfg_desc'],
@@ -118,11 +120,9 @@ class CommandParser:
         ret = []
 
         try:
-            print(f"In: {args}")
-            ret = self.annAp.parse_args("ID");
-            print(f"args: {args}, ret: {ret}")
+            ret = self.annAp.parse_args(args.split(' '));
         except Exception as err:
-            print(f"Error in AnnParse: {err=}")
+            self.cmd_log.error(f"Error in AnnParse: {err=}")
 
         return ret
 
@@ -377,9 +377,9 @@ if __name__ == '__main__':
 #    ret = cp.SortCommand("/init This is a Test!  This is only a test.")
 #    print(f"ret = {ret}")
 
-    ret = cp.SortCommand("/announcements ID J09DlA -add -channel 4893839 -rem_time start-1h -message 'stuff'")
-    ret = cp.SortCommand("/announcements J09DlA remove 1")
-    ret = cp.SortCommand("/announcements J09DlA")
+    ret = cp.SortCommand("/announcements -ID J09DlA add -channel 4893839 -rem_time start-1h -message 'stuff'")
+    ret = cp.SortCommand("/announcements -ID J09DlA remove -msg_id 1")
+    ret = cp.SortCommand("/announcements -ID J09DlA")
     print(f"Done!")
 
 
