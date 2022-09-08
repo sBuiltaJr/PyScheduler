@@ -15,24 +15,24 @@ class CommandParser:
         
         #This is an incredibly handy way to execute based on a valid function
         #name, automatically excluding invalid names, all in O(1) time!
-        self.funcs = {'announce'  : self.ParseAnnouncements,
-                      'config'    : self.ParseConfig,
-                      'create'    : self.ParseCreate,
-                      'delete'    : self.ParseDelete,
-                      'diagnose'  : self.ParseDiagnose,
-                      'edit'      : self.ParseEdit,
-                      'events'    : self.ParseEvents,
-                      'guild'     : self.ParseGuild,
-                      'init'      : self.ParseInit,
-                      'list'      : self.ParseList,
-                      'manage'    : self.ParseManage,
-                      'oauth'     : self.ParseOauth,
-                      'schedules' : self.ParseSchedules,
-                      'skip'      : self.ParseSkip,
-                      'sort'      : self.ParseSort,
-                      'sync'      : self.ParseSync,
-                      'test'      : self.ParseTest,
-                      'zones'     : self.ParseZones
+        self.funcs = {'announcements': self.ParseAnnouncements,
+                      'config'       : self.ParseConfig,
+                      'create'       : self.ParseCreate,
+                      'delete'       : self.ParseDelete,
+                      'diagnose'     : self.ParseDiagnose,
+                      'edit'         : self.ParseEdit,
+                      'events'       : self.ParseEvents,
+                      'guild'        : self.ParseGuild,
+                      'init'         : self.ParseInit,
+                      'list'         : self.ParseList,
+                      'manage'       : self.ParseManage,
+                      'oauth'        : self.ParseOauth,
+                      'schedules'    : self.ParseSchedules,
+                      'skip'         : self.ParseSkip,
+                      'sort'         : self.ParseSort,
+                      'sync'         : self.ParseSync,
+                      'test'         : self.ParseTest,
+                      'zones'        : self.ParseZones
                       }
 
         self.cmd_log = log.getLogger('command_log')
@@ -51,30 +51,30 @@ class CommandParser:
 
         #It's presumably faster to make all the parser instances once instead
         #of every invocation of a parse function.
-        annAp = ap.ArgumentParser(prog=self.txt['ann_prog'],
+        self.annAp = ap.ArgumentParser(prog=self.txt['ann_prog'], \
                                   description=self.txt['ann_desc'],
-                                  help=self.txt['ann_help'])
+                                  allow_abbrev=False)
         #todo:  There's probably a clever way to loop this.
-        annAp.add_argument("ID", type=str, required=True)
-        annGrp = annAp.add_mutually_exclusive_group(required=False)
+        self.annAp.add_argument("-ID", type=str)
+#        self.annSub = self.annAp.add_subparsers()
         #The command is effectively 'add to channel'
-        annGrp.add_argument("add", type=int)
-        annGrp.add_argument("delete", type=int)
-        #Add's validate function needs to parse any additional arguments.
-        annAp.add_argument("args", type=str, requried=False)
+#        self.annSubAdd = self.annSub.add_parser('add', help=self.txt['ann_add_help'])
+#        self.annSubAdd.add_argument('-channel', type=int)
+#        self.annSubAdd.add_argument('-rem_time', type=str)
+#        self.annSubAdd.add_argument('-message', type=str)
+#        self.annSubRem = self.annSub.add_parser('remove', help=self.txt['ann_rem_help'])
+#        self.annSubRem.add_argument('-msg_id', type=int)
 
-
-        cfgAp = ap.ArgumentParser(prog=self.txt['cfg_prog'],
-                                  description=self.txt['cfg_desc'],
-                                  help=self.txt['cfg_help'])
-        #todo:  There's probably a clever way to loop this.
-        cfgAp.add_argument("ID", type=str, required=True)
-        annGrp = annAp.add_mutually_exclusive_group(required=False)
-        #The command is effectively 'add to channel'
-        annGrp.add_argument("add", type=int)
-        annGrp.add_argument("delete", type=int)
-        #Add's validate function needs to parse any additional arguments.
-        annAp.add_argument("args", type=str, requried=False)
+#        cfgAp = ap.ArgumentParser(prog=self.txt['cfg_prog'],
+#                                  description=self.txt['cfg_desc'],
+#                                  help=self.txt['cfg_help'])
+#        cfgAp.add_argument("ID", type=str, required=True)
+#        annGrp = annAp.add_mutually_exclusive_group(required=False)
+#        #The command is effectively 'add to channel'
+#        annGrp.add_argument("add", type=int)
+#        annGrp.add_argument("delete", type=int)
+#        #Add's validate function needs to parse any additional arguments.
+#        annAp.add_argument("args", type=str, requried=False)
 
 
     def SortCommand(self, cmd : str) -> list:
@@ -116,6 +116,13 @@ class CommandParser:
            Output: list - A list of the arguments (null if invalid).
         """
         ret = []
+
+        try:
+            print(f"In: {args}")
+            ret = self.annAp.parse_args("ID");
+            print(f"args: {args}, ret: {ret}")
+        except Exception as err:
+            print(f"Error in AnnParse: {err=}")
 
         return ret
 
@@ -367,8 +374,14 @@ if __name__ == '__main__':
                         filemode='a', \
                         level=log.INFO)
     cp = CommandParser()
-    ret = cp.SortCommand("/init This is a Test!  This is only a test.")
-    print(f"ret = {ret}")
+#    ret = cp.SortCommand("/init This is a Test!  This is only a test.")
+#    print(f"ret = {ret}")
+
+    ret = cp.SortCommand("/announcements ID J09DlA -add -channel 4893839 -rem_time start-1h -message 'stuff'")
+    ret = cp.SortCommand("/announcements J09DlA remove 1")
+    ret = cp.SortCommand("/announcements J09DlA")
+    print(f"Done!")
+
 
 
 #Basic idea: Have a different parser for each command, return list.
