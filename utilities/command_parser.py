@@ -81,24 +81,31 @@ class CommandParser:
         self.cfgSubRmd.add_argument('remove', type=bool, nargs='?', \
                                     default=False)
         self.cfgSubRmd.add_argument('msg', type=str, nargs='?', default='')
+        self.cfgSubErm = self.cfgSub.add_parser('end-remind', \
+                                                help=self.txt['cfg_erm_help'])
+        self.cfgSubErm.add_argument('msg', type=str, nargs='?', default='')
         self.cfgSubChn = self.cfgSub.add_parser('chan', \
                                                 help=self.txt['cfg_chn_help'])
+        self.cfgSubChn.add_argument('msg', type=str, nargs='?', default='')
         self.cfgSubRms = self.cfgSub.add_parser('remind-msg', \
                                                 help=self.txt['cfg_rms_help'])
+        self.cfgSubRms.add_argument('msg', type=str, nargs='?', default='')
         self.cfgSubRvp = self.cfgSub.add_parser('rsvp',
                                                  help=self.txt['cfg_rvp_help'])
-        self.cfgSubRvp.add_argument('-on',\
-                                    help=self.txt['cfg_rvp_on_help'])
-        self.cfgSubRvp.add_argument('-off',\
-                                    help=self.txt['cfg_rvp_off_help'])
-        self.cfgSubRvp.add_argument('-add', nargs=2, \
-                                    help=self.txt['cfg_rvp_add_help'])
-        self.cfgSubRvp.add_argument('-remove', nargs=1, \
-                                    help=self.txt['cfg_rvp_rmv_help'])
+        self.cfgSubRvp.add_argument('on', type=bool, nargs='?',
+                               default=False, help=self.txt['cfg_rvp_on_help'])
+        self.cfgSubRvp.add_argument('add', type=bool, nargs='?', \
+                              default=False, help=self.txt['cfg_rvp_add_help'])
+        self.cfgSubRvp.add_argument('-role', type=str, nargs='?', default='');
+        self.cfgSubRvp.add_argument('-id', type=int, nargs= '?', default=0);
+        self.cfgSubRvp.add_argument('remove', type=bool, nargs='?',
+                                 default='', help=self.txt['cfg_rvp_rmv_help'])
         self.cfgSubClr = self.cfgSub.add_parser('clear', \
                                                 help=self.txt['cfg_clr_help'])
+        self.cfgSubClr.add_argument('id', type=str, nargs='?', default='')
         self.cfgSubExc = self.cfgSub.add_parser('exclusivity',
                                                 help=self.txt['cfg_exc_help'])
+        self.cfgSubExc.add_argument('action', type=str, nargs='?', default='')
 
         #Create
 
@@ -135,7 +142,7 @@ class CommandParser:
         #Fortuantely the quotes are required to by the last element, allowing
         #us to scan for them and manually insert the string as an argument at
         #the end of an arg list.
-        print(f"usr_str: {usr_str}")
+        #print(f"usr_str: {usr_str}")
         if usr_str[1].endswith('"'):
             #User formmated commands can be of any length or pattern, but
             #shouldn't contain quotes, so we just need to parse backwards to
@@ -148,12 +155,12 @@ class CommandParser:
                 usr_str[1] = \
                         usr_str[1][:((cmd_index - 1) if cmd_index > 0 else 0)]
                 self.cmd_log.debug(f"User args had string arg: {cmd_str}")
-                print(f"split: {usr_str}, {cmd_index}, {cmd_str}")
+                #print(f"split: {usr_str}, {cmd_index}, {cmd_str}")
         usr_args = usr_str[1].split(' ')
         usr_args.append(cmd_str)
         #Todo: this is really just a hack.
         parse_args = list(filter(None, usr_args))
-        print(f"args: {parse_args}")
+        #print(f"args: {parse_args}")
 
         ret = function(parse_args)
 
@@ -194,7 +201,6 @@ class CommandParser:
         try:
             self.cmd_log.debug(f"cfg args are: {args}")
             ret = self.cfgAp.parse_args(args);
-            print(f"ret: {ret}")
         except Exception as err:
             self.cmd_log.error(f"Error in CfgParse: {err=}")
 
@@ -444,15 +450,15 @@ if __name__ == '__main__':
 #    ret = cp.SortCommand('/announcements J09DlA')
 
 #    ret = cp.SortCommand('/config 474738')
-    ret = cp.SortCommand('/config 474738 msg "@here The event %t %a. %f"')
-    ret = cp.SortCommand('/config 474738 remind "10, 20, 30 min"')
-    ret = cp.SortCommand('/config 474738 remind remove "20 min"')
+#    ret = cp.SortCommand('/config 474738 msg "@here The event %t %a. %f"')
+#    ret = cp.SortCommand('/config 474738 remind "10, 20, 30 min"')
+#    ret = cp.SortCommand('/config 474738 remind remove "20 min"')
 #    ret = cp.SortCommand('/config 474738 end-remind "10 min"')
 #    ret = cp.SortCommand('/config 474738 chan "general"')
 #    ret = cp.SortCommand('/config 474738 remind-msg "reset"')
-#    ret = cp.SortCommand('/config 474738 rsvp -on')
-#    ret = cp.SortCommand('/config 474738 rsvp -add DPS 478293472')
-#    ret = cp.SortCommand('/config 474738 rsvp -remove Undecided')
+#    ret = cp.SortCommand('/config 474738 rsvp on')
+#    ret = cp.SortCommand('/config 474738 rsvp add -role DPS -id 478293472')
+#    ret = cp.SortCommand('/config 474738 rsvp remove -role Undecided')
 #    ret = cp.SortCommand('/config 474738 clear 2345273450')
 #    ret = cp.SortCommand('/config 474738 exclusivity off')
 
