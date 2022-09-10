@@ -52,31 +52,54 @@ class CommandParser:
         #It's presumably faster to make all the parser instances once instead
         #of every invocation of a parse function.
         self.annAp = ap.ArgumentParser(prog=self.txt['ann_prog'], \
-                                  description=self.txt['ann_desc'],
-                                  allow_abbrev=False)
+                                       description=self.txt['ann_desc'],
+                                       allow_abbrev=False)
         #todo:  There's probably a clever way to loop this.
-        self.annAp.add_argument("-ID", type=str)
+        self.annAp.add_argument("ID", type=str)
         self.annSub = self.annAp.add_subparsers()
-        #The command is effectively 'add to channel'
         self.annSubAdd = self.annSub.add_parser('add', \
                                                 help=self.txt['ann_add_help'])
-        self.annSubAdd.add_argument('-channel', type=int, required=True)
-        self.annSubAdd.add_argument('-rem_time', type=str, required=True)
-        self.annSubAdd.add_argument('-message', type=str, required=True)
+        self.annSubAdd.add_argument('channel', type=int)
+        self.annSubAdd.add_argument('rem_time', type=str)
+        self.annSubAdd.add_argument('message', type=str)
         self.annSubRem = self.annSub.add_parser('remove',\
                                                 help=self.txt['ann_rem_help'])
-        self.annSubRem.add_argument('-msg_id', type=int, required=True)
+        self.annSubRem.add_argument('msg_id', type=int)
 
-#        cfgAp = ap.ArgumentParser(prog=self.txt['cfg_prog'],
-#                                  description=self.txt['cfg_desc'],
-#                                  help=self.txt['cfg_help'])
-#        cfgAp.add_argument("ID", type=str, required=True)
-#        annGrp = annAp.add_mutually_exclusive_group(required=False)
-#        #The command is effectively 'add to channel'
-#        annGrp.add_argument("add", type=int)
-#        annGrp.add_argument("delete", type=int)
-#        #Add's validate function needs to parse any additional arguments.
-#        annAp.add_argument("args", type=str, requried=False)
+        #Config
+        self.cfgAp = ap.ArgumentParser(prog=self.txt['cfg_prog'], \
+                                       description=self.txt['cfg_desc'],
+                                       allow_abbrev=False)
+        self.cfgAp.add_argument("chan", type=int)
+        self.cfgSub = self.cfgAp.add_subparsers()
+        self.cfgSubMsg = self.cfgSub.add_parser('msg', \
+                                                help=self.txt['cfg_msg_help'])
+#        self.cfgSubMsg.add_argument('msg_txt', type=str, \
+#                                     help=self.txt['cfg_msg_help'])
+        self.cfgSubRmd = self.cfgSub.add_parser('remind',\
+                                                help=self.txt['cfg_rmd_help'])
+        self.cfgSubRmd.add_argument('-remove', type=str)
+        self.cfgSubChn = self.cfgSub.add_parser('chan', \
+                                                help=self.txt['cfg_chn_help'])
+        self.cfgSubRms = self.cfgSub.add_parser('remind-msg', \
+                                                help=self.txt['cfg_rms_help'])
+        self.cfgSubRvp = self.cfgSub.add_parser('rsvp',
+                                                 help=self.txt['cfg_rvp_help'])
+        self.cfgSubRvp.add_argument('-on',\
+                                    help=self.txt['cfg_rvp_on_help'])
+        self.cfgSubRvp.add_argument('-off',\
+                                    help=self.txt['cfg_rvp_off_help'])
+        self.cfgSubRvp.add_argument('-add', nargs=2, \
+                                    help=self.txt['cfg_rvp_add_help'])
+        self.cfgSubRvp.add_argument('-remove', nargs=1, \
+                                    help=self.txt['cfg_rvp_rmv_help'])
+        self.cfgSubClr = self.cfgSub.add_parser('clear', \
+                                                help=self.txt['cfg_clr_help'])
+        self.cfgSubExc = self.cfgSub.add_parser('exclusivity',
+                                                help=self.txt['cfg_exc_help'])
+
+        #Create
+
 
 
     def SortCommand(self, cmd : str) -> list:
@@ -89,8 +112,9 @@ class CommandParser:
            
            Output: list - A list of the arguments (null if invalid).
         """
-        ret = [];
-        usr_string = [];
+        cmd_str    = ''
+        ret        = []
+        usr_string = []
         
         try:
             usr_string = str(cmd).split(sep=' ',maxsplit=1)
@@ -101,12 +125,34 @@ class CommandParser:
             self.cmd_log.error(f"Invalid command prefix in string: {cmd}")
             return ret
 
-        ret = function(usr_string[1])
+        #This is necessary to avoid split issues with commands as the original
+        #bot allowed for unrestricted message format when quoted.  This makes
+        #a split on the other, space-separated, command elements hard.
+        #Fortuantely the quotes are requored to by the last element, allowing
+        #us to scan for them and manually insert the string as an argument at
+        #the end of an arg list.
+        if args.endswith('"'):
+                #User formmated commands can be of any length or pattern,
+                #but shouldn't contain quotes, so we just need to parse
+                #backwards to where another quote can be found to complete the
+                #pair.
+                cmd_index = args.rfind('"', 0,-1)
+
+                #Technically the else is also an error but the parser can
+                #handle it.
+                if cmd_index > 0:
+                    cmd_str = cmd[cmd_index:]
+                    args    = cmd[:cmd_index]
+                    print(f"split: {cmd_str}, {cmd_index}, {args}")
+        usr_args = args.split(' ')
+        usr_args.append(cmd_str)
+
+        ret = function(usr_args)
 
         return ret
 
 
-    def ParseAnnouncements(self, args : str) -> list:
+    def ParseAnnouncements(self, args : list) -> list:
         """Parses the announcements command.  Announcements requires at least
            1 argument with 2 optional; one for the channel to list 
            announcements, and 2 optional to either add a announcement string
@@ -120,7 +166,8 @@ class CommandParser:
         ret = []
 
         try:
-            ret = self.annAp.parse_args(args.split(' '));
+            self.cmd_log.debug(f"Annc args are: {args.split(' ')}")
+            ret = self.annAp.parse_args(args);
         except Exception as err:
             self.cmd_log.error(f"Error in AnnParse: {err=}")
 
@@ -136,6 +183,27 @@ class CommandParser:
            Output: list - A list of the arguments (null if invalid).
         """
         ret = []
+        try:
+            if args.endswith('"'):
+                #User formmated commands can be of any length or pattern,
+                #but shouldn't contain quotes, so we just need to parse
+                #backwards to where another quote can be found to complete the
+                #pair.
+                cmd_index = args.rfind('"', 0,-1)
+
+                #Technically the else is also an error but the parser can
+                #handle it.
+                if cmd_index > 0:
+                    cmd_str = args[cmd_index:]
+                    args = args[:cmd_index]
+                    print(f"split: {cmd_str}, {cmd_index}, {args}")
+
+            self.cmd_log.debug(f"cfg args are: {args.split(' ')}")
+            ret = self.cfgAp.parse_args(args.split(' '));
+            print(f"ret: {ret}")
+        except Exception as err:
+            self.cmd_log.error(f"Error in CfgParse: {err=}")
+
 
         return ret
 
@@ -377,11 +445,27 @@ if __name__ == '__main__':
 #    ret = cp.SortCommand("/init This is a Test!  This is only a test.")
 #    print(f"ret = {ret}")
 
-    ret = cp.SortCommand("/announcements -ID J09DlA add -channel 4893839 -rem_time start-1h -message 'stuff'")
-    ret = cp.SortCommand("/announcements -ID J09DlA remove -msg_id 1")
-    ret = cp.SortCommand("/announcements -ID J09DlA")
+#    ret = cp.SortCommand("/announcements J09DlA add 4893839 start-1h 'stuff'")
+#    ret = cp.SortCommand("/announcements J09DlA remove 1")
+#    ret = cp.SortCommand("/announcements J09DlA")
+
+#    ret = cp.SortCommand('/config 474738')
+    ret = cp.SortCommand('/config 474738 msg "@here The event %t %a. %f"')
+    ret = cp.SortCommand('/config 474738 remind "10, 20, 30 min"')
+    ret = cp.SortCommand('/config 474738 remind -remove "20 min"')
+#    ret = cp.SortCommand('/config 474738 end-remind "10 min"')
+#    ret = cp.SortCommand('/config 474738 chan "general"')
+#    ret = cp.SortCommand('/config 474738 remind-msg "reset"')
+#    ret = cp.SortCommand('/config 474738 rsvp -on')
+#    ret = cp.SortCommand('/config 474738 rsvp -add DPS 478293472')
+#    ret = cp.SortCommand('/config 474738 rsvp -remove Undecided')
+#    ret = cp.SortCommand('/config 474738 clear 2345273450')
+#    ret = cp.SortCommand('/config 474738 exclusivity off')
+
+
     print(f"Done!")
 
 
 
 #Basic idea: Have a different parser for each command, return list.
+#Need the initial handler to peel off any qutoe strings and add as an argument.
