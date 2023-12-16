@@ -31,6 +31,7 @@ creds = {}
 default_params = {'cfg'       : 'config/config.json',
                   'cred'      : 'config/credentials.json',
                   'bot_token' : ''}
+params = {}
 PSB_version = '0.0.1'    
 #This will be modified in the future to accept user-supplied paths.
 #This file must be loaded prior to the logger to allow for user-provided
@@ -43,8 +44,6 @@ try:
     #issues.  Obviously can't solve all potential problems.
     with open(cfg_path.absolute()) as json_file:
         params = json.load(json_file)
-    else:
-        raise FileNotFoundError
 
 except OSError as err:
     print(f"Can't load the config file from path: {cred_path.absolute()}!")
@@ -196,9 +195,10 @@ def Startup():
     disLog.debug(f"Starting Bot client")
     
     try:
+        print(f"creds: {creds['bot_token']}")
         PSB_client.run(creds['bot_token'])
     except Exception as err:
-        disLog.error(f"Caught exception {err} when trynig to run the PSB client!")
+        disLog.error(f"Caught exception {err} when trying to run the PSB client!")
 
 
 if __name__ == '__main__':

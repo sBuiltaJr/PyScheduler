@@ -4,20 +4,17 @@
     "log_encoding"  : "utf-8",
     "log_file_cnt"  : "5",
     "log_lvl"       : "DEBUG",
-    "log_name"      : "logs/IGSD_Main.log",
-    "log_name_queue": "logs\\IGSD_Queue.log",
+    "log_name"      : "logs/PSB_Main.log",
+    "log_name_queue": "logs\\PSB_Queue.log",
     "log_mode"      : "w",
     "managers"      : "1",
     "max_bytes"     : "33554432",
-    "options"       :
-    {
-    },
     "queue_opts":
     {
         "depth"            : "100",
         "job_count"        : "1",
         "max_guilds"       : "10",
-        "max_guild_reqs"   : "10",
+        "max_guild_reqs"   : "10"
     },
     "comments":
     {
@@ -28,7 +25,7 @@
         {
             "depth"            : "How many jobs can be in the queue.",
             "max_guilds"       : "Max guilds to serve at a time, if you want to limit that.",
-            "max_guild_reqs"   : "How many requests can be submitted by a single guild.  Stops a single guild from spamming the bot.",
+            "max_guild_reqs"   : "How many requests can be submitted by a single guild.  Stops a single guild from spamming the bot."
         }
     }
 }
