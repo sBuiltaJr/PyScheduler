@@ -1,2 +1,2 @@
-PyMongo==4.2.0
-discord==2.2.2
+PyMongo==4.6.1
+discord==2.3.2

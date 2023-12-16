@@ -10,7 +10,6 @@
 import logging as log
 import multiprocessing as mp
 import queue
-import requests as req
 import time
 
 jobs = {}

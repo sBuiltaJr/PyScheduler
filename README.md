@@ -17,7 +17,7 @@ While intended to be portable, older versions will not be expressly supported.
 
 ## Self-Hosting
 PyScheduler can be self-hosted with the following dependencies:
-- Python 3.10 (for encoding handling)
+- Python 3.12 (for fixes to typing aliases)
 - mongoDB 6.0 (older versions/other DBs may work)
 - Pip 22.0.2
 - Discord.py 2.0.1
