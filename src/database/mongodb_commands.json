@@ -1,0 +1,8 @@
+{
+	"create_bogus"     : "bogus;",
+	"delete_bogus"     : "DELETE FROM bogus WHERE test='0';",
+	"drop_bogus"       : "DROP TABLE bogus;",
+	"insert_bogus"     : "{'test_val' : '65536'}",
+	"edit_event"       : "",
+	"login"            : "mongodb://%s:%s/"
+}

@@ -1,0 +1,21 @@
+{
+    "auto_reconnect" : "True",
+    "database"       : "PSBDB",
+    "host"           : "localhost",
+    "log_file_mode"  : "755",
+    "log_dir"        : "logs",
+    "log_encoding"   : "utf-8",
+    "log_level"      : "INFO",
+    "log_mode"       : "w",
+    "password"       : "",
+    "port"           : "27017",
+    "tables"         :
+    {
+        "calendar"   : "PSBCalendars",
+        "events"     : "PSBEvents",
+        "guilds"     : "PSBGuilds"
+    },
+    "templates"      : "templates",
+    "user_name"      : "PSB"
+}
+
