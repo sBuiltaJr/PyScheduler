@@ -27,6 +27,7 @@ Newer versions of the above may also work.
 
 The following OS's have been tested for self hosting:
 - Windows 10 21H2
+- Debian 12 Bookworm
 - Ubuntu 20.04
 - MacOS Monterey 12.5.1
 
@@ -47,5 +48,3 @@ python3 PyScheduler.py
 Also see the [changelog](CHANGELOG.md).
 - Discord only allows a maximum number of emotes to be attached to a single
   post; limiting signup types for a single event.
-- The bot command format will not work with versiosn of Discord older than the
-  9/1/2022 update.

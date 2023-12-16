@@ -1,4 +1,4 @@
-#This file manages itnerfacing to a maraidb server of at least version 10.
+#This file manages interfacing to a maraidb server of at least version 10.
 #It may work with older mariadb versions, though they are untested.
 
 import json
