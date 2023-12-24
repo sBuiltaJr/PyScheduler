@@ -7,6 +7,7 @@
 
 import asyncio as asy
 import base64 as b64
+import datetime as dt
 import discord as dis
 from discord import app_commands as dac
 import io
@@ -16,6 +17,7 @@ import json
 import multiprocessing as mp
 import os
 import pathlib as pl
+import re
 import src.managers.QueueMgr as qm
 import threading as th
 import time
@@ -139,7 +141,51 @@ async def on_ready():
     worker.start()
     
     print('------')
-    
+
+#####  Helper Classes  #####
+
+class TimeTransformer(dac.Transformer):
+    async def transform(self, interaction: dis.Interaction, input: str) -> dt.time:
+        common_time  = re.compile(" *[0-9]{1,2} *: *[0-9]{1,2} *[ap]m")
+        common_match = common_time.fullmatch(input)
+        disLog       = log.getLogger('discord')
+        mil_time     = re.compile(" *[0-9]{1,2} *: *[0-9]{1,2} *")
+        mil_match    = mil_time.fullmatch(input)
+        time         = None
+        
+        disLog.debug(f"Time transform parameters are: {input} {common_match} {mil_match}.")
+        
+        try:
+            #These are split into full subsections in case it becomes necessary
+            #to parse common and mil time differently.
+            if common_match != None :
+            
+                parts = input.replace(" ","").split(":")
+                parts[0] = int(parts[0]) + 12 if parts[1][-2:] == "pm" else parts[0]
+
+                if int(parts[0])      < 25 and int(parts[0])      >= 0 and \
+                   int(parts[1][:-2]) < 61 and int(parts[1][:-2]) >= 0 :
+                   
+                    time  = dt.time(hour=int(parts[0]), minute=int(parts[1][:-2]))
+                
+            elif  mil_match != None :
+            
+                parts = input.replace(" ","").split(":")
+                disLog.debug(f"Mil time parts are: {parts}")
+
+                if int(parts[0]) < 25 and int(parts[0]) >= 0 and \
+                   int(parts[1]) < 61 and int(parts[1]) >= 0 :
+                   
+                    time  = dt.time(hour=int(parts[0]), minute=int(parts[1]))
+        except Exception as err:
+            disLog.warn(f"Exception processing invalid time string {input}, {err}.")
+        
+        disLog.debug(f"Time returned was {time}.")
+        return time
+
+
+#####  Commands #####
+
 @PSB_client.tree.command(name="hello",
                          description=f"A basic test ping message.")
 async def hello(interaction: dis.Interaction):
@@ -149,13 +195,13 @@ async def hello(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="init",
                          description=f"Creates a Schedule.")
 @dac.describe(schedule=f"An optional name for a schedule or an existing channel to use for the schedule.  Defaults to 'new_schedule' in the current channel.")
 async def init(interaction: dis.Interaction,
-               schedule : Optional[str] = "new_schedule"):
+               schedule : Optional[dac.Range[str, 0, 100]] = "new_schedule"): #Discord channel names are limited to 100 characters.
     """
 
        Input  : None.
@@ -170,17 +216,38 @@ async def init(interaction: dis.Interaction,
     else:
         message = f"Using the channel {schedule} to create a schedule named 'new_schedule'"
     
-    await interaction.response.send_message(message, ephemeral=True, delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
     
-@PSB_client.tree.command(name="tbd0",description="TBD")
+@PSB_client.tree.command(name="edit",
+                         description="Update an event's contents.")
 @dac.describe()
-async def edit(interaction: dis.Interaction):
+async def edit(interaction: dis.Interaction,
+               start        : Optional[dac.Transform[str, TimeTransformer]] = None,
+               end          : Optional[dac.Transform[str, TimeTransformer]] = None,
+               title        : Optional[dac.Range[str, 0, 100]] = "new_schedule",
+               comment      : Optional[str] = None, #Comment Transformer
+               date         : Optional[str] = "new_schedule", #Date Transformer
+               start_date   : Optional[str] = "new_schedule", #Date Transformer
+               end_date     : Optional[str] = "new_schedule", #Date Transformer
+               repeat       : Optional[str] = "new_schedule", #Weekday Transformer (list of days)
+               url          : Optional[dac.Range[str, 0, 1024]] = None,
+               quiet_start  : Optional[bool] = None,
+               quiet_end    : Optional[bool] = None,
+               quiet_remind : Optional[bool] = None,
+               expire       : Optional[str] = "new_schedule", #Date Transformer
+               deadline     : Optional[str] = "new_schedule", #Date Transformer
+               count        : Optional[dac.Range[int, -(pow(2,53) - 1), (pow(2,53) - 1)]] = "new_schedule",
+               limit        : Optional[str] = None): #Limit Transformer
     """
        Input  : None.
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #Transformer for dates for input validation and conversion into ISODate for GC
+    #https://discordpy.readthedocs.io/en/stable/interactions/api.html?highlight=app_command%20range#discord.app_commands.Transformer
+    #TODO: Complete command processing.
+    message= "tbd to make discord happy {start}"
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
     
 @PSB_client.tree.command(name="tbd1",description="TBD")
 @dac.describe()
@@ -191,7 +258,9 @@ async def delete(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd2",description="TBD")
 @dac.describe()
@@ -202,7 +271,9 @@ async def guild(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd3",description="TBD")
 @dac.describe()
@@ -213,7 +284,9 @@ async def create(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd4",description="TBD")
 @dac.describe()
@@ -224,7 +297,9 @@ async def config(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd5",description="TBD")
 @dac.describe()
@@ -235,7 +310,9 @@ async def purge(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd6",description="TBD")
 @dac.describe()
@@ -246,7 +323,9 @@ async def list(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd7",description="TBD")
 @dac.describe()
@@ -257,7 +336,9 @@ async def help(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd8",description="TBD")
 @dac.describe()
@@ -268,7 +349,9 @@ async def schedules(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd9",description="TBD")
 @dac.describe()
@@ -279,7 +362,9 @@ async def events(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd10",description="TBD")
 @dac.describe()
@@ -290,7 +375,9 @@ async def sync(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd11",description="TBD")
 @dac.describe()
@@ -301,7 +388,9 @@ async def oauth(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd12",description="TBD")
 @dac.describe()
@@ -312,7 +401,9 @@ async def test(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd13",description="TBD")
 @dac.describe()
@@ -323,7 +414,9 @@ async def skip(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd14",description="TBD")
 @dac.describe()
@@ -334,7 +427,9 @@ async def sort(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd15",description="TBD")
 @dac.describe()
@@ -345,7 +440,9 @@ async def zones(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd16",description="TBD")
 @dac.describe()
@@ -356,7 +453,9 @@ async def manage(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd17",description="TBD")
 @dac.describe()
@@ -367,7 +466,9 @@ async def diagnose(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd18",description="TBD")
 @dac.describe()
@@ -378,7 +479,9 @@ async def announcements(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=True, delete_after=9.0)
+    #TODO: Complete command processing.
+    message= ""
+    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
 
 
 #####  main  #####
@@ -429,7 +532,6 @@ def Startup():
     disLog.debug(f"Starting Bot client")
     
     try:
-        print(f"creds: {creds['bot_token']}")
         PSB_client.run(creds['bot_token'])
     except Exception as err:
         disLog.error(f"Caught exception {err} when trying to run the PSB client!")

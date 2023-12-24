@@ -1,5 +1,6 @@
 {
     "date_fmt"      : "%Y-%m-%d %H:%M:%S",
+	"delete_cmds"   : "False",
     "log_dir"       : "logs",
     "log_encoding"  : "utf-8",
     "log_file_cnt"  : "5",
