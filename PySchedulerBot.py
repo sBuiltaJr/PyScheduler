@@ -195,7 +195,7 @@ async def hello(interaction: dis.Interaction):
 
        Output : None.
     """
-    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(f'Hi, {interaction.user.mention}', ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="init",
                          description=f"Creates a Schedule.")
@@ -216,7 +216,7 @@ async def init(interaction: dis.Interaction,
     else:
         message = f"Using the channel {schedule} to create a schedule named 'new_schedule'"
     
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
     
 @PSB_client.tree.command(name="edit",
                          description="Update an event's contents.")
@@ -260,7 +260,7 @@ async def delete(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd2",description="TBD")
 @dac.describe()
@@ -273,7 +273,7 @@ async def guild(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd3",description="TBD")
 @dac.describe()
@@ -286,7 +286,7 @@ async def create(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd4",description="TBD")
 @dac.describe()
@@ -299,7 +299,7 @@ async def config(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd5",description="TBD")
 @dac.describe()
@@ -312,7 +312,7 @@ async def purge(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd6",description="TBD")
 @dac.describe()
@@ -325,7 +325,7 @@ async def list(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd7",description="TBD")
 @dac.describe()
@@ -338,7 +338,7 @@ async def help(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd8",description="TBD")
 @dac.describe()
@@ -351,7 +351,7 @@ async def schedules(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd9",description="TBD")
 @dac.describe()
@@ -364,7 +364,7 @@ async def events(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd10",description="TBD")
 @dac.describe()
@@ -377,7 +377,7 @@ async def sync(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd11",description="TBD")
 @dac.describe()
@@ -390,7 +390,7 @@ async def oauth(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd12",description="TBD")
 @dac.describe()
@@ -403,7 +403,7 @@ async def test(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd13",description="TBD")
 @dac.describe()
@@ -416,7 +416,7 @@ async def skip(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd14",description="TBD")
 @dac.describe()
@@ -429,7 +429,7 @@ async def sort(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd15",description="TBD")
 @dac.describe()
@@ -442,7 +442,7 @@ async def zones(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd16",description="TBD")
 @dac.describe()
@@ -455,7 +455,7 @@ async def manage(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd17",description="TBD")
 @dac.describe()
@@ -468,7 +468,7 @@ async def diagnose(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 @PSB_client.tree.command(name="tbd18",description="TBD")
 @dac.describe()
@@ -481,7 +481,7 @@ async def announcements(interaction: dis.Interaction):
     """
     #TODO: Complete command processing.
     message= ""
-    await interaction.response.send_message(message, ephemeral=params['delete_cmds'], delete_after=9.0)
+    await interaction.response.send_message(message, ephemeral=bool(params['delete_cmds']), delete_after=9.0)
 
 
 #####  main  #####
